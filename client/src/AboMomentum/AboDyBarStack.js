@@ -154,7 +154,7 @@ export default class AboDyBarStack extends Component {
                         churnedABOData = churnedABOData.toString().replace(/(\d)(?=(?:\d{3}[+]?)+$)/g, '$1,')
                         var thisChurnedABOData = 'Churned ABO:' + churnedABOData + "k";
                     }
-                    return "<div style='border-bottom:1px solid #ffffff;color:#333;'>" + monthUp + "</div>" + "<div style='color:#4d96f2;'>" + thisNewRecruitedABOData + "</div>" + "<div style='border-bottom:1px solid #ffffff;color:#29ccaf;'>" + thisExistingABOData + "</div>" + "<div style='border-bottom:1px solid #ffffff;color:#ffffff;'>" + thisAboDataAddNumber + "</div>" + "<div style='color:#eb5652;'>" + thisChurnedABOData + "</div>"
+                    return "<div style='border-bottom:1px solid #ffffff;color:#333;'>" + monthUp + "</div>" + "<div style='color:#29ccaf;'>" + thisNewRecruitedABOData + "</div>" + "<div style='border-bottom:1px solid #ffffff;color:#4d96f2;'>" + thisExistingABOData + "</div>" + "<div style='border-bottom:1px solid #ffffff;color:#ffffff;'>" + thisAboDataAddNumber + "</div>" + "<div style='color:#eb5652;'>" + thisChurnedABOData + "</div>"
                 }
             },
             color: ['#4d96f2', '#29ccaf', '#eb5652'],

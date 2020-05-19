@@ -48,7 +48,6 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        // console.log()
         // 实现吸顶
         window.addEventListener("scroll", () => {
             let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
@@ -73,6 +72,11 @@ class Home extends Component {
             }
         })
 
+        this.apiDataUpdate()
+    }
+
+    apiDataUpdate(){
+        
         this.props.chartStore.fetchPerformanceData1();
         this.props.chartStore.fetchPerformanceData2Tooltip();
         this.props.chartStore.fetchPerformanceData2Com()
@@ -137,7 +141,6 @@ class Home extends Component {
         this.props.chartStoreSocial.fetchSocialSopSalData()
     }
 
-
     handleSwitchChange = nr => () => {
         this.isPerfYear = !this.isPerfYear
 
@@ -158,7 +161,11 @@ class Home extends Component {
         //     thisWindowWidth,
         // })
     }
-
+    handleDataUpdate = () =>{
+        // this.apiDataUpdate()
+        this.props.chartStoreGrowth.fetchGrowthTableData()
+        this.props.chartStoreAbo.fetchAboPinPopData()
+    }
     // onClickEditDashboard() {
     //     this.dashboardRef.onClickEditDashboard()
     // }
@@ -261,7 +268,7 @@ class Home extends Component {
                             {
                                 this.selectedTab === "AGP KPI" ? "" : this.selectedTab === "Daily Report" ? <div style={{ marginRight: "11%", lineHeight: "30px" }}>{fivePageDateUp}</div> : <div className='custom-control custom-switch perf-switch-wrap' style={{ marginRight: "11%" }}>
                                     <label className='perf-lbl' htmlFor='perfYearSwitcher'>
-                                        PF
+                                        Performance Year
                                 </label>
                                     <input
                                         type='checkbox'
@@ -272,7 +279,7 @@ class Home extends Component {
                                         readOnly
                                     />
                                     <label className='custom-control-label' htmlFor='perfYearSwitcher'>
-                                        CY
+                                        Calendar Year
                                 </label>
                                 </div>
                             }
@@ -311,7 +318,12 @@ class Home extends Component {
                                     <DailyReportContainer />
                                     {/* <CardsLayout onRef={ref => (this.dashboardRef = ref)}/> */}
                                 </Tab>
+                                {/* <Tab style={{}} className="aaaa"  title={<div onClick={this.handleDataUpdate.bind(this)}><i className="fa fa-retweet" aria-hidden="true"></i></div>}>
+
+                                </Tab> */}
+                                
                             </Tabs>
+
                         </div>
                     </div>
                 </React.Fragment>

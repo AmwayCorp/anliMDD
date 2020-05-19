@@ -645,7 +645,7 @@ class ChartStoreGrowth {
           'Customer',
           'ABO (Purchasing Only)'
       ]
-
+      console.log(jsArr,"jsArr")
       let dataState = _.map(jsArr, (o)=>{
         o.rank = SEG_ORDER_MAP[o.segment_desc]
         if ( SUBTITLES.indexOf(o.segment_desc) !== -1 ) {
@@ -660,7 +660,7 @@ class ChartStoreGrowth {
 
         return o
       })
-
+      console.log(dataState,"dataState")
       dataState = _.sortBy(dataState, 'rank')
 
 

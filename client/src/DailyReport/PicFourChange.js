@@ -31,16 +31,20 @@ export default class PicFourChange extends Component {
             data3MaxYear: "",
             data3MaxMonth: "",
             pieThreeDataArr: [],//玫瑰图原数据
-            pieThreeDataArrAll:[],//饼图的全部数据
-            pieThreeLegend:[],//饼图的图例
-            pieThreeDataFourNew:{},//第四个的新的独立数据
+            pieThreeDataArrAll: [],//饼图的全部数据
+            pieThreeLegend: [],//饼图的图例
+            pieThreeDataFourNew: {},//第四个的新的独立数据
+            thisYearDataTwinkle: [],//散点图
+            lastYearPrompBoxData: [],//去年的数据特殊标记
+            tempPromptBoxShowAllData:[],
+            promptBoxShowLastYearData:[],
             // pieThreeDataArrOne:[],//饼图的第一个图的数据
             // pieThreeDataArrTwo:[],//饼图的第二个图的数据
             // pieThreeDataArrThree:[],//饼图的第三个图的数据
             // pieThreeDataArrFour:[],//饼图的第四个图的数据
             // pieThreeShowData: [],//玫瑰图加了数据
 
-            promptBoxShow:[],//提示框里面要展示的活动的All
+            promptBoxShow: [],//提示框里面要展示的活动的All
         }
     }
     render() {
@@ -53,7 +57,7 @@ export default class PicFourChange extends Component {
                         <div style={{ marginTop: "16px", fontWeight: "600", fontSize: "14px", color: "#ffffff", marginLeft: '9%' }}>Net Sales(MTD)</div>
                         {/* <div style={{ marginTop: "22px", fontSize: "12px", color: "#ffffff", marginLeft: '9%' }}>Month to date</div> */}
                         <h3 style={{ marginTop: "55px", fontSize: "28px", color: "#ffffff", marginLeft: '9%' }}>${netData.monthData || 0}m</h3>
-                        <div style={{ position: 'absolute', left: "49%", top: "46px", fontWeight: "600", fontSize: "12px", color: "#ffffff" }}>Target Completion:{netData.targetCompletionDta || 0}%</div>
+                        <div style={{ position: 'absolute', left: "49%", top: "46px", fontWeight: "600", fontSize: "12px", color: "#ffffff" }}>Target Completion: {netData.targetCompletionDta || 0}%</div>
                         <div style={{ position: 'absolute', left: "66%", top: "72px", fontWeight: "600", fontSize: "12px", color: "#ffffff" }}>vs SPLM:{(netData.lmData >= 0 ? "+" + netData.lmData : netData.lmData) || 0}%</div>
                         <div style={{ position: 'absolute', left: "66%", top: "100px", fontWeight: "600", fontSize: "12px", color: "#ffffff" }}>vs SPLY :{(netData.splyData >= 0 ? "+" + netData.splyData : netData.splyData) || 0}%</div>
                     </div>
@@ -124,7 +128,7 @@ export default class PicFourChange extends Component {
         var data2 = this.props.data2 || {}
         var data3 = this.props.data3 || {}
         var dataOneLine = this.props.dataOneLine || {}
-        var dataPromptBox = this.props.dataPromptBox  || {}
+        var dataPromptBox = this.props.dataPromptBox || {}
 
         var changeName = []
         var netData = {}
@@ -246,19 +250,19 @@ export default class PicFourChange extends Component {
                 buyerCountsDate.monthData = buyerCountsDate.monthData.toString().replace(/(\d)(?=(?:\d{3}[+]?)+$)/g, '$1,')
                 buyerCountsDate.lmData = Math.round((item.pct_mtd_splm || 0) * 100)
                 buyerCountsDate.splyData = Math.round((item.pct_mtd_sply || 0) * 100)
-            } else if (item.type == "ABO" || item.type == "PC"){
+            } else if (item.type == "ABO" || item.type == "PC") {
                 pieThreeDataThree.value = Math.round(((item.num_population_mtd || 0) / 1000))
                 pieThreeDataThree.name = item.type == "ABO" ? "New ABO" : "New PC";
                 pieThreeDataThree.lmData = Math.round((item.pct_mtd_splm || 0) * 100);
                 pieThreeDataThree.splyData = Math.round((item.pct_mtd_sply || 0) * 100);
                 pieThreeDataArrThree.push(pieThreeDataThree)
-            }else if(item.type == "ABO buyer count" || item.type == "PC buyer count" || item.type == "FOA buyer count"){
+            } else if (item.type == "ABO buyer count" || item.type == "PC buyer count" || item.type == "FOA buyer count") {
                 pieThreeDataFour.value = Math.round(((item.num_population_mtd || 0) / 1000))
                 pieThreeDataFour.name = item.type == "ABO buyer count" ? "ABO Buyer" : item.type == "PC buyer count" ? "PC Buyer" : "FOA Buyer";
                 pieThreeDataFour.lmData = Math.round((item.pct_mtd_splm || 0) * 100);
                 pieThreeDataFour.splyData = Math.round((item.pct_mtd_sply || 0) * 100);
                 pieThreeDataArrFour.push(pieThreeDataFour)
-            }else if(item.type == "FOA"){
+            } else if (item.type == "FOA") {
                 pieThreeDataFourNew.value = Math.round(((item.num_population_mtd || 0) / 1000))
                 pieThreeDataFourNew.name = "New FOA Buyer";
                 pieThreeDataFourNew.lmData = Math.round((item.pct_mtd_splm || 0) * 100);
@@ -289,7 +293,7 @@ export default class PicFourChange extends Component {
         // console.log(data3)
         data3.sales_data ? data3.sales_data.map((item, index) => {
             if (item.type == "NET_SALES") {
-                item.y ? data3ThisYear.push((((item.y || 0) / 1000000)).toFixed(1)) : ""
+                item.y ? data3ThisYear.push((((item.y || 0) / 1000000)).toFixed(1)) : data3ThisYear.push("")
             }
         }) : ""
         data3.sales_ly_data ? data3.sales_ly_data.map((item, index) => {
@@ -298,16 +302,70 @@ export default class PicFourChange extends Component {
                 item.y ? data3LastYear.push((((item.y || 0) / 1000000)).toFixed(1)) : ""
             }
         }) : ""
-//         tableData: Array(15)
-// 0: {n_month: "202005", start_day: "May. 11 2020", activity: "PROMOTION", promotion_desc: "May Random Coupon Campaign"}
+        //         tableData: Array(15)
+        // 0: {n_month: "202005", start_day: "May. 11 2020", activity: "PROMOTION", promotion_desc: "May Random Coupon Campaign"}
         var promptBoxShow = []//提示框里面要展示的活动
-        dataPromptBox.tableData ? dataPromptBox.tableData.map((item,index)=>{
-            var itemMonthId = parseInt( String(item.n_month).slice(4, 6))
-            if(itemMonthId == data3MaxMonth){
+        dataPromptBox.tableData ? dataPromptBox.tableData.map((item, index) => {
+            var itemMonthId = parseInt(String(item.n_month).slice(4, 6))
+            if (itemMonthId == data3MaxMonth) {
                 promptBoxShow.push(item)
             }
         }) : ""
+        //         {n_month: "201905", start_day: "May. 11 2019", end_day: "20190630", activity: "PROMOTION", promotion_desc: "May Artistry Promotion - 2nd wave"}
+        //{n_month: "201905", start_day: "May. 06 2019", end_day: "20190630", activity: "PROMOTION", promotion_desc: "May Artistry Promotion"}
+        //(12) ["12.9", "3.8", "3.6", "3.0", "5.4", "4.6", "4.1", "3.5", "3.7", "3.8", "3.2", "6.9"]
+        var thisYearDataTwinkle = []
+        var promptBoxShowAllData = []
+        var promptBoxShowLastYear = []//去年的数据集合
+        // console.log(promptBoxShow)
+        promptBoxShow.map((item, index) => {
+            var monthIdDay = parseInt(String(item.start_day).slice(5, 7))//日子
+            var yearDay = parseInt(String(item.start_day).slice(-4))//年份
+            if (yearDay == data3MaxYear) {
+                promptBoxShowAllData.push(monthIdDay)//promptBoxShowAllData集合了活动日期的一个数组
+            } else if (yearDay == data3PrevYear) {
+                promptBoxShowLastYear.push(monthIdDay)
+            }
+        })
 
+        function uniq(array) {//数组去重
+            var tempPromptBoxShowAll = []; //一个新的临时数组，去重后的集合了活动日期的一个数组
+            for (var i = 0; i < array.length; i++) {
+                if (tempPromptBoxShowAll.indexOf(array[i]) == -1) {
+                    tempPromptBoxShowAll.push(array[i]);
+                }
+            }
+            return tempPromptBoxShowAll;
+        }
+        var tempPromptBoxShowAllData = uniq(promptBoxShowAllData)
+        var promptBoxShowLastYearData = uniq(promptBoxShowLastYear)
+        //把当月的数据判断当天是否有活动，有就加入数据，没有加空
+        data3ThisYear.map((item, index) => {
+            for (var i = 0; i < tempPromptBoxShowAllData.length; i++) {
+                if (index + 1 == tempPromptBoxShowAllData[i]) {
+                    thisYearDataTwinkle.push(item || "0");
+                }
+            }
+            //第二种方法：判断新数组的长度和当前index进行对比
+            // if (thisYearDataTwinkle.length < index) {
+            //     thisYearDataTwinkle.push("");
+            // }
+            if (!thisYearDataTwinkle[index]) {
+                thisYearDataTwinkle.push("");
+            }
+        })
+        var lastYearPrompBoxData = []
+        data3LastYear.map((item, index) => {
+            for (var i = 0; i < promptBoxShowLastYearData.length; i++) {
+                var promptBoxShowLastYearDataObj = {}
+                if (index + 1 == promptBoxShowLastYearData[i]) {
+                    promptBoxShowLastYearDataObj.value = item || ""
+                    promptBoxShowLastYearDataObj.yAxis = item || ""
+                    promptBoxShowLastYearDataObj.xAxis = index || ""
+                    lastYearPrompBoxData.push(promptBoxShowLastYearDataObj);
+                }
+            }
+        })
         this.setState({
             data,
             data2,
@@ -332,9 +390,12 @@ export default class PicFourChange extends Component {
             pieThreeDataArr,//饼图的总数据
             pieThreeDataFourNew,//第四个的新的独立数据
             pieThreeLegend,//饼图的图例
+            lastYearPrompBoxData,//去年的数据的特殊标记
+            tempPromptBoxShowAllData,
+            promptBoxShowLastYearData,
+            thisYearDataTwinkle,
             // pieThreeShowData,//玫瑰图加了数据的
             promptBoxShow,
-
         }, () => {
             this.echartsShowLine();
             this.pieAngleHandle();
@@ -343,7 +404,7 @@ export default class PicFourChange extends Component {
     }
     //点击图片下面切换数据
     picChangeDateHandle(idx, e) {
-        var { data, data2, changeNameArrShow, changeName, allEvents, allEventsArr,pieThreeDataArr,pieThreeDataArrAll,pieThreeLegend} = this.state
+        var { data, data2, changeNameArrShow, changeName, allEvents, allEventsArr, pieThreeDataArr, pieThreeDataArrAll, pieThreeLegend } = this.state
 
         allEvents = allEventsArr[idx]
         // if(e.target.childNodes[1].innerHTML){
@@ -381,11 +442,11 @@ export default class PicFourChange extends Component {
         // }
         pieThreeDataArr = pieThreeDataArrAll[idxIndexShow]
         pieThreeLegend = []
-        pieThreeDataArr && pieThreeDataArr.length > 0 ? pieThreeDataArr.map((item,index)=>{
+        pieThreeDataArr && pieThreeDataArr.length > 0 ? pieThreeDataArr.map((item, index) => {
             item.name !== "New FOA Buyer" ? pieThreeLegend.push(item.name) : ""
         }) : ""
         this.setState({
-            changeName, allEvents, idxIndexShow,pieThreeDataArr,pieThreeLegend
+            changeName, allEvents, idxIndexShow, pieThreeDataArr, pieThreeLegend
         }, () => {
             var { elmUpDateBlue } = this.state
             if (elmUpDateBlue) {
@@ -414,7 +475,7 @@ export default class PicFourChange extends Component {
     }
     // 当被点击的时候数据进行切换的一个专用方法
     changeClickDataHandle(index) {
-        var { data3, idxIndexShow } = this.state
+        var { data3, idxIndexShow,tempPromptBoxShowAllData,promptBoxShowLastYearData } = this.state
         var changeNameArrDataShow = [
             { name: ["NET_SALES", "ACCL", "3E", "ECOM"] },
             { name: ["ORDER_BV_SALES"] },
@@ -431,6 +492,8 @@ export default class PicFourChange extends Component {
                     data3ThisYear.push((((item.y || 0) / 1000000)).toFixed(1))
                 } else if (item.y && idxIndexShow >= 2) {
                     data3ThisYear.push((((item.y || 0) / 1000)).toFixed(1))
+                }else{
+                    data3ThisYear.push("")
                 }
             }
         }) : ""
@@ -444,10 +507,39 @@ export default class PicFourChange extends Component {
                 }
             }
         }) : ""
+        var thisYearDataTwinkle = []
+        var lastYearPrompBoxData = []
+        data3ThisYear.map((item, index) => {
+            for (var i = 0; i < tempPromptBoxShowAllData.length; i++) {
+                if (index + 1 == tempPromptBoxShowAllData[i]) {
+                    thisYearDataTwinkle.push(item || "0");
+                }
+            }
+            //第二种方法：判断新数组的长度和当前index进行对比
+            // if (thisYearDataTwinkle.length < index) {
+            //     thisYearDataTwinkle.push("");
+            // }
+            if (!thisYearDataTwinkle[index]) {
+                thisYearDataTwinkle.push("");
+            }
+        })
+        data3LastYear.map((item, index) => {
+            for (var i = 0; i < promptBoxShowLastYearData.length; i++) {
+                var promptBoxShowLastYearDataObj = {}
+                if (index + 1 == promptBoxShowLastYearData[i]) {
+                    promptBoxShowLastYearDataObj.value = item || ""
+                    promptBoxShowLastYearDataObj.yAxis = item || ""
+                    promptBoxShowLastYearDataObj.xAxis = index || ""
+                    lastYearPrompBoxData.push(promptBoxShowLastYearDataObj);
+                }
+            }
+        })
         this.setState({
             data3XShow,
             data3ThisYear,
             data3LastYear,
+            thisYearDataTwinkle,
+            lastYearPrompBoxData,
         }, () => {
             this.echartsShowLine();
             this.pieAngleHandle();
@@ -471,7 +563,7 @@ export default class PicFourChange extends Component {
                     // var data3MaxYear = data3.maxYearStr || ""; //今年的年
                     // var data3MaxMonth = data3.maxMonth || ""; //现在的月
                     formatter: (data) => {
-                        var {data3MaxMonth,data3MaxYear,data3PrevYear,idxIndexShow,promptBoxShow} = this.state
+                        var { data3MaxMonth, data3MaxYear, data3PrevYear, idxIndexShow, promptBoxShow } = this.state
                         var yearThisData = "";
                         var yearLastData = "";
                         var forecastData = "";
@@ -486,46 +578,62 @@ export default class PicFourChange extends Component {
                         var monthShowTool = hlp.yearMonthFiveTooltipToStr(data3MaxMonth)
                         data.map((item, index) => {
                             if (item.componentIndex && item.componentIndex == 1) {
-                                yearLastData = item.value || 0
+                                yearLastData = item.value || ""
+                            } else if (item.componentIndex && item.componentIndex == 2) {
+
                             } else {
-                                yearThisData = item.value || 0
+                                yearThisData = item.value || ""
                             }
                             nameShow = item.name
                             monthUp = item.axisValue
                         })
                         //         tableData: Array(15)
-// 0: {n_month: "202005", start_day: "May. 11 2020", activity: "PROMOTION", promotion_desc: "May Random Coupon Campaign"}
-                        promptBoxShow.map((item,index)=>{
-                            var monthIdDay = parseInt( String(item.start_day).slice(5, 7))
-                            var yearIdDay = parseInt( String(item.n_month).slice(0, 4))
-                            if(monthIdDay == monthUp){
-                                if(yearIdDay == yearThisTool){
-                                    thisTool += "<div style='display:flex;justify-content: space-between'><span style='color:#f2df3f'>" + " " + "</span>" + item.promotion_desc + "</div>"
-                                }else if(yearIdDay == yearLastTool){
-                                    lastTool += "<div style='display:flex;justify-content: space-between'><span style='color:#f2df3f'>" + " " + "</span>" + item.promotion_desc + "</div>"
+                        // 0: {n_month: "202005", start_day: "May. 11 2020", activity: "PROMOTION", promotion_desc: "May Random Coupon Campaign"}
+                        // 0: {n_month: "202005", start_day: "May. 19 2020", end_day: "20991231", activity: "KEY_LAUNCH", promotion_desc: "Hydra V Foundation Open Launch"}
+                        // 1: {n_month: "202005", start_day: "May. 19 2020", end_day: "20200531", activity: "PROMOTION", promotion_desc: "Artistry May Full line Promotion"}
+                        promptBoxShow.map((item, index) => {
+                            var monthIdDay = parseInt(String(item.start_day).slice(5, 7))
+                            var monthIdDayEnd = parseInt(String(item.end_day).slice(-2))
+                            var monthIdEnd = parseInt(String(item.end_day).slice(4, 6))
+                            var yearIdDay = parseInt(String(item.n_month).slice(0, 4))
+                            if (monthIdDay == monthUp) {
+                                if (yearIdDay == yearThisTool) {
+                                    if (item.activity == "PROMOTION") {
+                                        thisTool += "<div style='display:flex;justify-content: space-between;font-size:12px;line-height:14px'><span style='margin-right:5px;'>" + data3MaxMonth + "." + monthIdDay + "-" + monthIdEnd + "." + monthIdDayEnd + "</span>" + item.promotion_desc + "</div>"
+                                    } else {
+                                        thisTool += "<div style='display:flex;justify-content: space-between;font-size:12px;line-height:14px'><span style='color:#f2df3f'>" + " " + "</span>" + item.promotion_desc + "</div>"
+                                    }
+
+                                } else if (yearIdDay == yearLastTool) {
+                                    if (item.activity == "PROMOTION") {
+                                        lastTool += "<div style='display:flex;justify-content: space-between;font-size:12px;line-height:14px'><span style='margin-right:5px;'>" + data3MaxMonth + "." + monthIdDay + "-" + monthIdEnd + "." + monthIdDayEnd + "</span>" + item.promotion_desc + "</div>"
+                                    } else {
+                                        lastTool += "<div style='display:flex;justify-content: space-between;font-size:12px;line-height:14px'><span style='color:#f2df3f'>" + " " + "</span>" + item.promotion_desc + "</div>"
+                                    }
                                 }
                             }
                         })
 
-                        if(yearThisData){
-                            if(idxIndexShow < 2){
-                                var yearThisData = yearThisTool + " " + monthShowTool + ": " + yearThisData + "m" + "<br/>"
-                            }else{
-                                var yearThisData = yearThisTool + " " + monthShowTool + ": " + yearThisData + "k" + "<br/>"
+                        if (yearThisData) {
+                            if (idxIndexShow < 2) {
+                                var yearThisData = yearThisTool + ": " + yearThisData + "m" + "<br/>"
+                            } else {
+                                var yearThisData = yearThisTool + ": " + yearThisData + "k" + "<br/>"
                             }
                         }
-                        if(yearLastData){
-                            if(idxIndexShow < 2){
-                                var yearLastData = yearLastTool + " " + monthShowTool + ": " + yearLastData + "m"
-                            }else{
-                                var yearLastData = yearLastTool + " " + monthShowTool + ": " + yearLastData + "k"
+
+                        if (yearLastData) {
+                            if (idxIndexShow < 2) {
+                                var yearLastData = yearLastTool + ": " + yearLastData + "m"
+                            } else {
+                                var yearLastData = yearLastTool + ": " + yearLastData + "k"
                             }
                         }
-                        if(thisTool){
-                            var thisToolShow = "<div style='display:flex;'><span style='color:#f2df3f'>" + "★" + "</span>" + yearThisTool + " " + monthShowTool + "</div>" + thisTool
+                        if (thisTool) {
+                            var thisToolShow = "<div style='display:flex;font-size:12px;line-height:14px'><span style='color:#f2df3f;font-size:12px;line-height:14px'>" + "★" + "</span>" + yearThisTool + "</div>" + thisTool
                         }
-                        if(lastTool){
-                            var lastToolShow = "<div style='display:flex;'><span style='color:#f2df3f'>" + "★" + "</span>" + yearLastTool + " " + monthShowTool + "</div>" + lastTool
+                        if (lastTool) {
+                            var lastToolShow = "<div style='display:flex;font-size:12px;line-height:14px'><span style='color:#f2df3f;font-size:12px;line-height:14px'>" + "★" + "</span>" + yearLastTool + "</div>" + lastTool
                         }
                         // var thisNow = "2019 Mar:" + yearThisData;
                         // if (tooltipData && tooltipData[nameShow]) {
@@ -533,7 +641,7 @@ export default class PicFourChange extends Component {
                         //         toolShow += "<div style='display:flex;justify-content: space-between'><span style='color:#f2df3f'>" + "★" + "</span>" + item + "</div>"
                         //     })
                         // }
-                        return "<div style='border-bottom:1px solid #ffffff';fontSize:10px>" + monthUp + "</div>" + "<div style='border-bottom:1px solid #ffffff';fontSize:10px>" + yearThisData + yearLastData + '</div>' + thisToolShow + lastToolShow
+                        return "<div style='border-bottom:1px solid #ffffff;font-size:12px;line-height:14px'>" + monthShowTool + " " + monthUp + "</div>" + "<div style='border-bottom:1px solid #ffffff;font-size:12px;line-height:14px'>" + yearThisData + yearLastData + '</div>' + thisToolShow + lastToolShow
                     }
                 },
                 xAxis: [
@@ -634,6 +742,28 @@ export default class PicFourChange extends Component {
                             type: 'line',
                             smooth: true,
                             symbol: "none", //去掉折线点
+                            // symbol: (value) => {
+                            //     console.log(value)
+                            //     var showSymbol = "circle"
+                            //     // tooltipData.map((item, index) => {
+                            //     //     if (item.y == value) {
+                            //     //         showSymbol = "triangle";
+                            //     //     }
+                            //     // })
+                            //     return showSymbol
+                            // }, //去掉折线点
+                            markPoint: {
+                                // symbol: 'triangle',
+                                symbolRotate: '0',
+                                symbolSize: 15,// 容器大小
+                                itemStyle: {
+                                    color: '#a2a6ab',
+                                },
+                                label: {
+                                    show: false,
+                                },
+                                data: this.state.lastYearPrompBoxData
+                            },
                             symbolSize: 5, //折线点的大小
                             stack: 100,
                             itemStyle: {
@@ -649,6 +779,89 @@ export default class PicFourChange extends Component {
                             areaStyle: {
                                 normal: {}
                             },
+                        },
+                        {
+                            type: 'effectScatter',
+                            coordinateSystem: 'cartesian2d',
+                            data: this.state.thisYearDataTwinkle, //2d坐标系
+                            symbolSize: 10,
+                            label: {
+                                show: false,
+                                position: 'top',
+                                // offset:[0,'-100%'],
+                                formatter: (params) => {
+                                    // console.log(params)
+                                    var { data3MaxMonth, data3MaxYear, promptBoxShow } = this.state
+                                    var thisTool = "";
+                                    var yearThisTool = data3MaxYear
+                                    var dataindex = params.name
+                                    promptBoxShow.map((item, index) => {
+                                        var monthIdDay = parseInt(String(item.start_day).slice(5, 7))
+                                        var monthIdDayEnd = parseInt(String(item.end_day).slice(-2))
+                                        var monthIdEnd = parseInt(String(item.end_day).slice(4, 6))
+                                        var yearIdDay = parseInt(String(item.n_month).slice(0, 4))
+                                        if (monthIdDay == params.name) {
+                                            if (yearIdDay == yearThisTool) {
+                                                if (item.activity == "PROMOTION") {
+                                                    thisTool += '\n' + data3MaxMonth + "." + monthIdDay + "-" + monthIdEnd + "." + monthIdDayEnd + " " + item.promotion_desc
+                                                } else {
+                                                    thisTool += '\n' + item.promotion_desc
+                                                }
+
+                                            }
+                                        }
+                                    })
+                                    return '{' + dataindex + '|' + thisTool + '}';
+                                },
+                                rich: {
+                                    11: {
+                                        // width: 1,
+                                        height:61,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                        color:'red',
+                                        lineHeight:8,
+                                        // padding : [15, 0, 0, 0],
+                                    },
+                                    16: {
+                                        height:20,
+                                        align: "center",
+                                        verticalAlign: "middle",
+                                        lineHeight:8,
+                                        // padding : [20, 0, 0, 0],
+                                        color:'yellow',
+                                    },
+                                    19: {
+                                        // height:900,
+                                        align: "center",
+                                        // width : 1,
+                                        // padding : [23, 0, 0, 0],
+                                        // lineHeight:12,
+                                        // color:"blue",
+                                        verticalAlign: "middle",
+                                    },
+                                },
+                                // backgroundColor: 'rgba(38,38,39,0.6)',
+                                // borderRadius: 5,
+                                // padding: 4,
+                                textStyle: {
+                                    fontSize: 8,
+                                    color: '#ffffff',
+                                }
+                            },
+                            showEffectOn: 'render',
+                            rippleEffect: {
+                                brushType: 'stroke'
+                            },
+                            hoverAnimation: true,
+                            itemStyle: {
+                                normal: {
+                                    color: '#4d96f1',
+                                    shadowBlur: 0,
+                                    shadowColor: '#333'
+                                }
+                            },
+                            zlevel: 1
                         }
                     ]
                 }
@@ -691,7 +904,7 @@ export default class PicFourChange extends Component {
             tooltip: {
                 trigger: 'item',
                 formatter: (data) => {
-                    var { pieThreeDataArr,idxIndexShow,pieThreeDataFourNew } = this.state;
+                    var { pieThreeDataArr, idxIndexShow, pieThreeDataFourNew } = this.state;
                     // console.log(pieThreeDataFourNew)
                     // {value: 78, name: "New FOA Buyer", lmData: -50, splyData: -18}
                     var pieIndex = pieThreeDataArr[data.dataIndex];
@@ -713,7 +926,7 @@ export default class PicFourChange extends Component {
                     }
                     var lmDataPie = "vs SPLM:" + lmData;
                     var splyDataPie = "vs SPLY:" + splyData;
-                    if(idxIndexShow == 3 && data.name == "FOA Buyer"){
+                    if (idxIndexShow == 3 && data.name == "FOA Buyer") {
                         var namePieNew = "including " + pieThreeDataFourNew.name
                         var valuePieNew = "MTD:" + pieThreeDataFourNew.value + "k";
                         if (pieThreeDataFourNew.lmData >= 0) {
@@ -735,7 +948,7 @@ export default class PicFourChange extends Component {
             },
             legend: {
                 orient: 'horizontal',
-                left:"center",
+                left: "center",
                 // right: 20,
                 bottom: 0,
                 itemWidth: 10,
@@ -759,7 +972,7 @@ export default class PicFourChange extends Component {
                                 color: '#fff'
                             },
                             position: 'inside',
-                            formatter:(data)=>{
+                            formatter: (data) => {
                                 return Math.round(data.percent) + "%"
                             }
                         },

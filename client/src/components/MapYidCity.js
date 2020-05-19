@@ -15,8 +15,8 @@ export default class MapYidCity extends Component {
         this.state = {
             cityClusterAllTable: [],
             maxMonthStr: "",
-            sortFalg:true,
-            sortFalg2:true,
+            sortFalg: true,
+            sortFalg2: true,
         }
     }
     render() {
@@ -26,7 +26,7 @@ export default class MapYidCity extends Component {
                 <div id="tableShowHidden">
                     {/* <div className="mapTitle">YIL sales by city cluster</div> */}
                     <div className="mapTitleTwo">As of {maxMonthStr}</div>
-                    <div style={{display:"flex"}}>
+                    <div style={{ display: "flex" }}>
                         <div id="cityMap" className="centerItemTable"></div>
                     </div>
                     <div className="mapSortData" onClick={this.mapSortDataHandler.bind(this)}></div>
@@ -42,8 +42,8 @@ export default class MapYidCity extends Component {
         )
     }
 
-    mapSortDataHandler2(){
-        var { cityClusterAllTable,sortFalg2 } = this.state
+    mapSortDataHandler2() {
+        var { cityClusterAllTable, sortFalg2 } = this.state
         sortFalg2 ? cityClusterAllTable.sort((a, b) => {
             var thisA = a.sales_vs_sply.replace(/%/g, '')
             var thisB = b.sales_vs_sply.replace(/%/g, '')
@@ -55,25 +55,21 @@ export default class MapYidCity extends Component {
         })
         sortFalg2 = !sortFalg2
         this.setState({
-            cityClusterAllTable,sortFalg2
+            cityClusterAllTable, sortFalg2
         }, () => {
             this.echartsCityData(); //执行echarts地图展示
         })
     }
     mapSortDataHandler() {
-        var { cityClusterAllTable,sortFalg } = this.state
+        var { cityClusterAllTable, sortFalg } = this.state
         sortFalg ? cityClusterAllTable.sort((a, b) => {
-            // var thisA = a.sales_vs_sply.replace(/%/g, '')
-            // var thisB = b.sales_vs_sply.replace(/%/g, '')
-            // return thisA - thisB;
-
             return a.actual_sales_sum - b.actual_sales_sum;
         }) : cityClusterAllTable.sort((a, b) => {
             return b.actual_sales_sum - a.actual_sales_sum;
         })
         sortFalg = !sortFalg
         this.setState({
-            cityClusterAllTable,sortFalg
+            cityClusterAllTable, sortFalg
         }, () => {
             this.echartsCityData(); //执行echarts地图展示
         })
@@ -114,11 +110,11 @@ export default class MapYidCity extends Component {
         // // tableShowHidden.style.opacity = "1"
         // this.echartsCityData(); //执行echarts地图展示
     }
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         // var {data} = nextProps
         this.setState({
-
-        },()=>{
+            sortFalg:true
+        }, () => {
             this.dataUpdateMapYid()
         })
     }
@@ -126,8 +122,7 @@ export default class MapYidCity extends Component {
         this.dataUpdateMapYid()
     }
     dataUpdateMapYid() {
-        var data = this.props.data || {}
-        var cityClusterAllTable = data.data || []
+
         // city_cluster: "哈尔滨城市群", actual_sales_sum: 4407761.54344828, perc_of_actual_sales: "2 %", sales_vs_sply: "-14.9 %", maxYear: 2020
         // cityClusterAllTable.sort((a, b) => {
         //     console.log(a.actual_sales_sum,111)
@@ -136,12 +131,16 @@ export default class MapYidCity extends Component {
         //     return b.actual_sales_sum - a.actual_sales_sum;
         // });
         // console.log(cityClusterAllTable,111)
+        var data = this.props.data || {}
+        var cityClusterAllTable = data.data || []
         var maxMonthStr = String(hlp.yearMonthToStr(data.maxMonth))
         this.setState({
             cityClusterAllTable,
             maxMonthStr,
         }, () => {
-            this.echartsCityData(); //执行echarts地图展示
+            this.mapSortDataHandler()
+            // this.dataUpdateMapYid(); //执行echarts地图展示
+            // this.echartsCityData(); //执行echarts地图展示
         })
     }
     echartsCityData() {
@@ -297,7 +296,7 @@ export default class MapYidCity extends Component {
                 data: dataShowNumberSply(this.state.cityClusterAllTable),
                 position: 'right',
                 offset: 95,
-                nameRotate:0.2,
+                nameRotate: 0.2,
                 // nameLoaction: "center",
                 axisLabel: {
                     show: true,
@@ -319,15 +318,15 @@ export default class MapYidCity extends Component {
                         var value = value.replace(/%/g, '')
                         if (Number(value) > -10 && Number(value) < 0) {
                             value = "  " + value + "%"
-                        } else if(Number(value) == 0 && 1 / Number(value) < 0){
+                        } else if (Number(value) == 0 && 1 / Number(value) < 0) {
                             value = " " + "-" + value + "%"
-                        } else if(Number(value) == 0 && 1 / Number(value) > 0){
+                        } else if (Number(value) == 0 && 1 / Number(value) > 0) {
                             value = " " + "+" + value + "%"
-                        } else if(Number(value) > 0 && Number(value) < 10){
+                        } else if (Number(value) > 0 && Number(value) < 10) {
                             value = " " + "+" + value + "%"
-                        } else if(Number(value) >= 10){
+                        } else if (Number(value) >= 10) {
                             value = "+" + value + "%"
-                        } else{
+                        } else {
                             value = value + "%"
                         }
                         return value;

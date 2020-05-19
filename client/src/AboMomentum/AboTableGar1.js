@@ -98,7 +98,7 @@ export default class AboTableGar extends Component {
                     </OverlayTrigger>
                 ) : (<td style={{ border: "1px solid #e5e6e9" }}>{o.gar_account ? o.gar_account : ""}</td>)}
 
-                {tooltipData2 ? (
+                {tooltipData ? (
                     <OverlayTrigger key={o.pin + 2}
                         placement={'right'}
                         overlay={<Tooltip id={o.pin + 56}><div>{tooltipData2}</div></Tooltip>}>

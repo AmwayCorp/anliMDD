@@ -253,7 +253,7 @@ export default class LineChartMonthlyEchaets extends Component {
                     if (tooltipData && tooltipData[nameShow] && tooltipData[nameShow].events) {
                         tooltipData[nameShow].events.sort()
                         tooltipData[nameShow].events.map((item, index) => {
-                            toolShow += "<div style='display:flex;justify-content: space-between'><span style='color:#f2df3f'>" + "★" + "</span>" + item + "</div>"
+                            toolShow += "<div style='display:flex;justify-content: space-between;font-size:12px;line-height:14px'><span style='color:#f2df3f'>" + "★" + "</span>" + item + "</div>"
                         })
                     }
                     return "<div style='border-bottom:1px solid #ffffff'>" + monthUp + "</div>" + "<div style='color:#ff9c46'>" + thisForecast + "</div>" + "<div style='color:#5198ee'>" + thisNow + "</div>" + "<div style='border-bottom:1px solid #ffffff;color:rgba(211,212,214)'>" + this.state.lastYearShow + " Actual:" + yearLastData + "m" + "</div>" + toolShow

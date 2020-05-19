@@ -60,12 +60,12 @@ export default class EchartsMapCity extends Component {
                     </li>
                     <li style={{ color: "#16b6aa" }}>
                         <span>City cluster</span>
-                        <div>Better <span style={{ color: '#333' }}>vs ACCL</span></div>
+                        <div>Better <span style={{ color: '#333' }}>vs SPLY</span></div>
                         <img src={oneMapUp} />
                     </li>
                     <li style={{ color: "#eb5652" }}>
                         <span>City cluster</span>
-                        <div>Worse <span style={{ color: '#333' }}>vs ACCL</span></div>
+                        <div>Worse <span style={{ color: '#333' }}>vs SPLY</span></div>
                         <img src={oneMapDown} />
                     </li>
                 </ul>

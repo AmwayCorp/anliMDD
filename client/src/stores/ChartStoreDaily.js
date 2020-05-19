@@ -273,6 +273,7 @@ class ChartStoreDaily {
       maxYearStr,
       prevYearStr,
       maxMonth,
+      pageUpDate,
       pageUpShowDate,
       // months_data: months_data,
     }
@@ -548,6 +549,7 @@ class ChartStoreDaily {
     if (!jsArr.length) {
       return false
     }
+    // console.log(jsArr,"jsArr")
     const dataState = _.map(jsArr, (o) => {
       o.start_day = dLib.format(dLib.parse(o.start_day, 'YYYYMMDD'), 'MMM. DD YYYY')
       return o
@@ -582,7 +584,7 @@ class ChartStoreDaily {
     const maxDateRaw = dataState.length && dataState[0].date || 0
     const maxMonth = parseInt(maxDateRaw)
     const maxDate = dLib.parse(maxDateRaw, 'YYYYMMDD')
-    const maxDateStr = dLib.format(maxDate, 'MMM. DD YYYY')
+    const maxDateStr = dLib.format(maxDate, 'MMM.DD YYYY')
 
     dataState = _.sortBy(dataState, (o) => parseInt(o.order_row));
     dataState = _.map(dataState, 'comment_row')

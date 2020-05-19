@@ -982,7 +982,7 @@ class ChartStoreAbo {
     //      console.log('garOrigData', garOrigData, garOrigNewData)
 
     let dataState = _.sortBy(jsArr, 'pin_rank')
-
+    // console.log(dataState)
     // update rank 1-4
     const RANK_TT = 4
     dataState = _.map(dataState, (o) => {

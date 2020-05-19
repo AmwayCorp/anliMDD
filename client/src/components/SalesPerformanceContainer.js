@@ -5,6 +5,7 @@ import { observable } from 'mobx'
 import { observer, inject } from 'mobx-react'
 
 import _ from 'lodash'
+import * as hlp from './Helper'
 
 import DonutChart from '../components/DonutChart'
 //import LineChart from '../components/LineChart'
@@ -66,8 +67,10 @@ class SalesPerformanceContainer extends React.PureComponent {
     const authStore = this.props.authStore
     const chartStore = this.props.chartStore
     const thisWindowWidth = this.props.thisWindowWidth
-
-    // console.log('performance2Com ', chartStore.performance2Com)    
+    var contrastData = this.props.chartStore.donutTotalSalesYear
+    var contrastDate = contrastData ? contrastData.contrastDate : ""
+    var contrastAllData = this.props.chartStore.performance2Com
+    var contrastmaxMonthStr = String( hlp.yearMonthToStr( contrastAllData.maxMonth ) )
 
     return (
 
@@ -140,7 +143,9 @@ class SalesPerformanceContainer extends React.PureComponent {
             </div>
             <div className="sb-wrap" style={{ width: '48.5%', height: '300px', background: '#ffffff', borderRadius: "10px", position: "relative" }}>
               {/* text */}
-              <TableViewComments data={chartStore.performance2Com} />
+              {
+                contrastDate == contrastmaxMonthStr ? <TableViewComments data={chartStore.performance2Com}/> : ""
+              }
             </div>
           </div>
           {/* <Row>
